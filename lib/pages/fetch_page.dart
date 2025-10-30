@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/settings_service.dart';
 import '../services/omdb_service.dart';
 import '../services/clipboard_service.dart';
+import '../services/movie_history_service.dart';
 import '../models/movie.dart';
 
 class FetchPage extends StatefulWidget {
@@ -16,6 +17,7 @@ class _FetchPageState extends State<FetchPage> with AutomaticKeepAliveClientMixi
   final _settingsService = SettingsService();
   final _omdbService = OmdbService();
   final _clipboardService = ClipboardService();
+  final _historyService = MovieHistoryService();
   
   bool _isLoading = false;
   Movie? _movie;
@@ -48,6 +50,9 @@ class _FetchPageState extends State<FetchPage> with AutomaticKeepAliveClientMixi
   }
 
   Future<void> _fetchMovie() async {
+    // Dismiss keyboard when fetch is triggered
+    FocusScope.of(context).unfocus();
+    
     final input = _inputController.text.trim();
     
     if (input.isEmpty) {
@@ -80,6 +85,9 @@ class _FetchPageState extends State<FetchPage> with AutomaticKeepAliveClientMixi
       
       // Copy to clipboard
       await _clipboardService.copyToClipboard(markdown);
+      
+      // Save to history
+      await _historyService.saveMovie(movie);
       
       setState(() {
         _isLoading = false;
@@ -126,14 +134,19 @@ class _FetchPageState extends State<FetchPage> with AutomaticKeepAliveClientMixi
       });
     }
     
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Fetch Movie Info'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
+    return GestureDetector(
+      onTap: () {
+        // Dismiss keyboard when tapping outside of text fields
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Fetch Movie Info'),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
@@ -270,6 +283,7 @@ class _FetchPageState extends State<FetchPage> with AutomaticKeepAliveClientMixi
             ],
           ],
         ),
+      ),
       ),
     );
   }

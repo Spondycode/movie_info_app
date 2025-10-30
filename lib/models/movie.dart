@@ -59,6 +59,28 @@ class Movie {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'Title': title,
+      'Year': year,
+      'Rated': rated,
+      'Released': released,
+      'Runtime': runtime,
+      'Genre': genre,
+      'Director': director,
+      'Writer': writer,
+      'Actors': actors,
+      'Plot': plot,
+      'Language': language,
+      'Country': country,
+      'Awards': awards,
+      'Poster': poster,
+      'imdbRating': imdbRating,
+      'imdbID': imdbID,
+      'Type': type,
+    };
+  }
+
   String toMarkdown() {
     return '''
 # $title ($year)

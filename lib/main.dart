@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'pages/settings_page.dart';
 import 'pages/search_page.dart';
 import 'pages/fetch_page.dart';
+import 'pages/list_page.dart';
 import 'services/settings_service.dart';
 
 void main() {
@@ -41,6 +42,7 @@ class _MainNavigationState extends State<MainNavigation> {
     const SettingsPage(),
     const SearchPage(),
     const FetchPage(),
+    const ListPage(),
   ];
 
   @override
@@ -88,6 +90,10 @@ class _MainNavigationState extends State<MainNavigation> {
           NavigationDestination(
             icon: Icon(Icons.download),
             label: 'Fetch',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.list),
+            label: 'History',
           ),
         ],
       ),
