@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/movie.dart';
+import '../models/search_result.dart';
 
 class OmdbService {
   static const String _baseUrl = 'https://www.omdbapi.com/';
@@ -25,6 +26,27 @@ class OmdbService {
       return Movie.fromJson(jsonData);
     } else {
       throw Exception('Failed to fetch movie data: ${response.statusCode}');
+    }
+  }
+
+  /// Search for movies by title
+  Future<List<SearchResult>> searchMovies(String query, String apiKey) async {
+    final url = Uri.parse('$_baseUrl?s=${Uri.encodeComponent(query)}&apikey=$apiKey');
+    
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      
+      // Check if the API returned an error
+      if (jsonData['Response'] == 'False') {
+        throw Exception(jsonData['Error'] ?? 'No results found');
+      }
+      
+      final searchResults = jsonData['Search'] as List<dynamic>;
+      return searchResults.map((item) => SearchResult.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to search movies: ${response.statusCode}');
     }
   }
 

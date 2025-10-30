@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages/settings_page.dart';
 import 'pages/search_page.dart';
+import 'pages/search_by_title_page.dart';
 import 'pages/fetch_page.dart';
 import 'pages/list_page.dart';
 import 'services/settings_service.dart';
@@ -41,6 +42,7 @@ class _MainNavigationState extends State<MainNavigation> {
   final List<Widget> _pages = [
     const SettingsPage(),
     const SearchPage(),
+    const SearchByTitlePage(),
     const FetchPage(),
     const ListPage(),
   ];
@@ -85,6 +87,10 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
           NavigationDestination(
             icon: Icon(Icons.search),
+            label: 'Browse',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.movie_filter),
             label: 'Search',
           ),
           NavigationDestination(
