@@ -23,9 +23,20 @@ class _FetchPageState extends State<FetchPage> with AutomaticKeepAliveClientMixi
   Movie? _movie;
   String? _errorMessage;
   bool _hasCheckedClipboard = false;
+  bool _hasText = false;
 
   @override
   bool get wantKeepAlive => false;
+
+  @override
+  void initState() {
+    super.initState();
+    _inputController.addListener(() {
+      setState(() {
+        _hasText = _inputController.text.isNotEmpty;
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -159,10 +170,27 @@ class _FetchPageState extends State<FetchPage> with AutomaticKeepAliveClientMixi
               decoration: InputDecoration(
                 hintText: 'e.g., tt0133093 or https://www.imdb.com/title/tt0133093/',
                 border: const OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.paste),
-                  onPressed: _pasteFromClipboard,
-                  tooltip: 'Paste from clipboard',
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_hasText)
+                      IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          setState(() {
+                            _inputController.clear();
+                            _movie = null;
+                            _errorMessage = null;
+                          });
+                        },
+                        tooltip: 'Clear',
+                      ),
+                    IconButton(
+                      icon: const Icon(Icons.paste),
+                      onPressed: _pasteFromClipboard,
+                      tooltip: 'Paste from clipboard',
+                    ),
+                  ],
                 ),
               ),
               maxLines: 3,
